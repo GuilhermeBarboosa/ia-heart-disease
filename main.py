@@ -42,7 +42,12 @@ plt.show()
 nomeGraficos.append("Matriz de Outliers")
 # Obtenha o número de dados aproveitados
 n_dados = len(data)
+percent_75 = int(0.75 * n_dados)
+percent_25 = n_dados - percent_75
+
 print("Quantidade de dados utilizados: " + str(n_dados))
+print("75% dos dados (treinamento): " + str(percent_75))
+print("25% dos dados (testes): " + str(percent_25))
 # =================================================================================================
 
 #Grafico de quantidade de pessoas doentes
