@@ -25,7 +25,9 @@ def limpa_string(string):
 
 graficos = []
 nomeGraficos = []
-
+tempos = []
+graficoModelos = []
+accuracyArray = []
 
 data = pd.read_csv("heart.csv")
 X = data.drop('Heart Disease', axis=1)
@@ -86,6 +88,9 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão do KNN 1')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do KNN 1")
+graficoModelos.append("KNN 1")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
 
 # KNN 2
@@ -107,6 +112,9 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão do KNN 2')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do KNN 2")
+graficoModelos.append("KNN 2")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
 
 
@@ -125,7 +133,6 @@ elapsed_time = end_time - start_time
 print('Tempo de execução do modelo SVM 1: {:.2f} segundos'.format(elapsed_time))
 print('Acurácia do modelo SVM 1: {:.2f}%'.format(accuracy * 100))
 print("\n")
-# print(classification_report(y_test, y_pred))
 confusion = confusion_matrix(y_test, y_pred)
 graficos.append(plt.figure(figsize=(6, 4)))
 sns.heatmap(confusion, annot=True, fmt='d', cmap='Blues')
@@ -134,6 +141,9 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão do SVM 1')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do SVM 1")
+graficoModelos.append("SVM 1")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
 
 # SVM 2
@@ -146,6 +156,7 @@ clf.fit(X_train, y_train)
 y_pred = clf.predict(X_test)
 end_time = time.time()
 elapsed_time = end_time - start_time
+accuracy = accuracy_score(y_test, y_pred)
 print('Tempo de execução do modelo SVM 2: {:.2f} segundos'.format(elapsed_time))
 print('Acurácia do modelo SVM 2: {:.2f}%'.format(accuracy * 100))
 print("\n")
@@ -157,6 +168,9 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão do SVM 2')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do SVM 2")
+graficoModelos.append("SVM 2")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
 
 
@@ -184,6 +198,9 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão do RNA 1')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do RNA 1")
+graficoModelos.append("RNA 1")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
 
 
@@ -197,6 +214,7 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 end_time = time.time()
 elapsed_time = end_time - start_time
+accuracy = accuracy_score(y_test, y_pred)
 print('Tempo de execução do modelo RNA 2: {:.2f} segundos'.format(elapsed_time))
 print('Acurácia do modelo RNA 2: {:.2f}%'.format(accuracy * 100))
 print("\n")
@@ -208,6 +226,9 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão do RNA 2')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do RNA 2")
+graficoModelos.append("RNA 2")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
 
 
@@ -236,6 +257,9 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão da Regressão Logística 1')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do Regressão Logística 1")
+graficoModelos.append("Regressão Logística 1")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
 
 
@@ -249,6 +273,7 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 end_time = time.time()
 elapsed_time = end_time - start_time
+accuracy = accuracy_score(y_test, y_pred)
 print('Tempo de execução do modelo Regressão logistica 2: {:.2f} segundos'.format(elapsed_time))
 print('Acurácia do modelo Regressão logistica 2: {:.2f}%'.format(accuracy * 100))
 print("\n")
@@ -260,7 +285,38 @@ plt.ylabel('Valores Reais')
 plt.title('Matriz de Confusão da Regressão Logística 1')
 plt.show()
 nomeGraficos.append("Matriz de Confusão do Regressão Logística 2")
+graficoModelos.append("Regressão Logística 2")
+tempos.append(elapsed_time)
+accuracyArray.append(accuracy)
 # =================================================================================================
+
+# Grafico de tempo de execução dos modelos
+graficos.append(plt.figure(figsize=(10, 6)))
+plt.barh(graficoModelos, tempos, color='lightblue')
+plt.xlabel('Tempo de Execução (segundos)')
+plt.title('Tempo de Execução dos Modelos')
+plt.grid(axis='x', linestyle='--', alpha=0.6)
+
+# Adicione os tempos como rótulos nas barras
+for i, tempo in enumerate(tempos):
+    plt.text(tempo, i, f'{tempo:.2f} s', va='center', fontsize=10, color='dimgrey')
+
+plt.tight_layout()
+plt.show()
+nomeGraficos.append("Gráfico de Tempo de Execução dos Modelos")
+# =================================================================================================
+
+# Grafico de acuracia dos modelos
+graficos.append(plt.figure(figsize=(10, 6)))
+bars = plt.barh(graficoModelos, accuracyArray, color='lightblue')
+plt.xlabel('Acurácia (%)')
+plt.title('Acurácia dos Modelos')
+for bar, accuracy in zip(bars, accuracyArray):
+    plt.text(bar.get_width(), bar.get_y() + bar.get_height() / 2, f'{accuracy:.2f}%', ha='left', va='center')
+plt.show()
+nomeGraficos.append("Gráfico de Acuracia dos Modelos")
+# =================================================================================================
+
 
 for grafico in graficos:
     # hora_atual = limpa_string(str(datetime.datetime.now()))
@@ -274,4 +330,6 @@ for grafico in graficos:
     # Salva o gráfico
     grafico.savefig(f"graficos/{nome_arquivo}")
 
-
+print(graficoModelos)
+print(accuracyArray)
+print(tempos)
