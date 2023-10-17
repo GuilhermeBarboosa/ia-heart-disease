@@ -6,12 +6,13 @@ import datetime
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsClassifier, LocalOutlierFactor
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
+from scipy import stats
 
 def limpa_string(string):
   string = string.replace(" ", "")
@@ -40,12 +41,37 @@ plt.title('Gráfico de Outliers Dataset')
 plt.xticks(rotation=90)
 plt.show()
 nomeGraficos.append("Matriz de Outliers")
+
+# Calcule os limites do boxplot
+Q1 = X.quantile(0.25)
+Q3 = X.quantile(0.75)
+IQR = Q3 - Q1
+# Identifique outliers
+outliers = ((X < (Q1 - 1.5 * IQR)) | (X > (Q3 + 1.5 * IQR))).sum()
+print("Quantidade de outliers por coluna:")
+
+# =================================================================================================
+# Mostre a quantidade de outliers por coluna
+clf = LocalOutlierFactor(n_neighbors=20)
+scores = clf.fit_predict(X)
+outliers = X[scores < 0]
+# =================================================================================================
+
+# Retirada dos outliers
+numeric_columns = data.select_dtypes(include=[int, float]).columns
+# Defina um limite para o escore Z (por exemplo, 3) para identificar outliers
+z_score_threshold = 3
+for column in numeric_columns:
+    z_scores = stats.zscore(data[column])
+    data = data[(z_scores < z_score_threshold) & (z_scores > -z_score_threshold)]
+# =================================================================================================
+
 # Obtenha o número de dados aproveitados
 n_dados = len(data)
 percent_75 = int(0.75 * n_dados)
 percent_25 = n_dados - percent_75
-
-print("Quantidade de dados utilizados: " + str(n_dados))
+print("Retirado " + str(len(outliers)) + " outliers")
+print("Quantidade de dados utilizados (retirando outliers): " + str(n_dados))
 print("75% dos dados (treinamento): " + str(percent_75))
 print("25% dos dados (testes): " + str(percent_25))
 # =================================================================================================
