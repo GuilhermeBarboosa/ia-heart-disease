@@ -321,18 +321,33 @@ for bar, accuracy in zip(bars, accuracyArray):
 plt.show()
 nomeGraficos.append("Gráfico de Acuracia dos Modelos")
 # =================================================================================================
+# Tabela de acuracia e tempo de execução dos modelos
+
+formatted_accuracy = ["{:.3f}%".format(acc) for acc in accuracyArray]
+formatted_tempos = ["{:.3f} seg".format(tp) for tp in tempos]
+
+data = {
+    "Modelo": graficoModelos,
+    "Acurácia": formatted_accuracy,
+    "Tempo (segundos)": formatted_tempos
+}
+
+df = pd.DataFrame(data)
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.axis('tight')
+ax.axis('off')
+table = ax.table(cellText=df.values, colLabels=df.columns, cellLoc='center', loc='center')
+plt.show()
+graficos.append(fig)
+nomeGraficos.append("Tabela dos modelos")
+
+# =================================================================================================
+
 
 
 for grafico in graficos:
-    # hora_atual = limpa_string(str(datetime.datetime.now()))
-
-    # titulo_da_janela = nomeGraficos[graficos.index(grafico)] + "-" + str(hora_atual)
-
     titulo_da_janela = nomeGraficos[graficos.index(grafico)]
-    # Obtém o nome do arquivo
     nome_arquivo = "grafico_" + titulo_da_janela + ".png"
-
-    # Salva o gráfico
     grafico.savefig(f"graficos/{nome_arquivo}")
 
 print(graficoModelos)
