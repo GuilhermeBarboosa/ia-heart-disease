@@ -14,16 +14,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import svm
 from scipy import stats
 
-def limpa_string(string):
-  string = string.replace(" ", "")
-  string = string.replace(":", "-")
-
-  index = string.find(".")
-  if index != -1:
-      return string[:index]
-  else:
-      return string
-
 graficos = []
 nomeGraficos = []
 tempos = []
@@ -48,13 +38,13 @@ Q3 = X.quantile(0.75)
 IQR = Q3 - Q1
 # Identifique outliers
 outliers = ((X < (Q1 - 1.5 * IQR)) | (X > (Q3 + 1.5 * IQR))).sum()
-print("Quantidade de outliers por coluna:")
 
 # =================================================================================================
 # Mostre a quantidade de outliers por coluna
 clf = LocalOutlierFactor(n_neighbors=20)
 scores = clf.fit_predict(X)
 outliers = X[scores < 0]
+
 # =================================================================================================
 
 # Retirada dos outliers
@@ -74,6 +64,7 @@ print("Retirado " + str(len(outliers)) + " outliers")
 print("Quantidade de dados utilizados (retirando outliers): " + str(n_dados))
 print("75% dos dados (treinamento): " + str(percent_75))
 print("25% dos dados (testes): " + str(percent_25))
+print("\n")
 # =================================================================================================
 
 #Grafico de quantidade de pessoas doentes
@@ -321,6 +312,8 @@ tempos.append(elapsed_time)
 accuracyArray.append(accuracy)
 # =================================================================================================
 
+formatted_tempos = ["{:.3f} seg".format(tp) for tp in tempos]
+
 # Grafico de tempo de execução dos modelos
 graficos.append(plt.figure(figsize=(10, 6)))
 plt.barh(graficoModelos, tempos, color='lightblue')
@@ -329,8 +322,8 @@ plt.title('Tempo de Execução dos Modelos')
 plt.grid(axis='x', linestyle='--', alpha=0.6)
 
 # Adicione os tempos como rótulos nas barras
-for i, tempo in enumerate(tempos):
-    plt.text(tempo, i, f'{tempo:.2f} s', va='center', fontsize=10, color='dimgrey')
+for i, tempo in enumerate(formatted_tempos):
+    plt.text(tempos[i] + 0.005, i, tempo, fontsize=10, color='black', ha='left', va='center')
 
 plt.tight_layout()
 plt.show()
