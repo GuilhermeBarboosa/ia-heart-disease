@@ -181,11 +181,11 @@ accuracyArray.append(accuracy)
 
 # Redes Neurais Artificiais 1
 start_time = time.time()
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=123)
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
-model = MLPClassifier(hidden_layer_sizes=(64, 64), activation='relu', max_iter=1000, random_state=42)
+model = MLPClassifier(hidden_layer_sizes=(64, 64), activation='relu', max_iter=1000, random_state=123)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
@@ -240,11 +240,11 @@ accuracyArray.append(accuracy)
 
 #Regressão logistica 1
 start_time = time.time()
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=456)
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
-model = LogisticRegression(random_state=42)
+model = LogisticRegression(random_state=456)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
@@ -350,6 +350,15 @@ for grafico in graficos:
     nome_arquivo = "grafico_" + titulo_da_janela + ".png"
     grafico.savefig(f"graficos/{nome_arquivo}")
 
-print(graficoModelos)
-print(accuracyArray)
-print(tempos)
+# print(graficoModelos)
+# print(accuracyArray)
+# print(tempos)
+data = {
+    "Modelo": graficoModelos,
+    "Acurácia": formatted_accuracy,
+    "Tempo (segundos)": formatted_tempos
+}
+
+df = pd.DataFrame(data)
+
+print(df)
