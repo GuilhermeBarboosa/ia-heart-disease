@@ -40,27 +40,22 @@ IQR = Q3 - Q1
 outliers = ((X < (Q1 - 1.5 * IQR)) | (X > (Q3 + 1.5 * IQR))).sum()
 
 # =================================================================================================
-# Mostre a quantidade de outliers por coluna
-clf = LocalOutlierFactor(n_neighbors=20)
-scores = clf.fit_predict(X)
-outliers = X[scores < 0]
-
-# =================================================================================================
-
-# Retirada dos outliers
+#Retirada de outliers
 numeric_columns = data.select_dtypes(include=[int, float]).columns
-# Defina um limite para o escore Z (por exemplo, 3) para identificar outliers
 z_score_threshold = 3
+outliers_removed = 0
 for column in numeric_columns:
     z_scores = stats.zscore(data[column])
+    outliers = data[(z_scores >= z_score_threshold) | (z_scores <= -z_score_threshold)]
+    outliers_removed += len(outliers)
     data = data[(z_scores < z_score_threshold) & (z_scores > -z_score_threshold)]
-# =================================================================================================
 
+# =================================================================================================
 # Obtenha o número de dados aproveitados
 n_dados = len(data)
 percent_75 = int(0.75 * n_dados)
 percent_25 = n_dados - percent_75
-print("Retirado " + str(len(outliers)) + " outliers")
+print("Retirado " + str(outliers_removed) + " outliers")
 print("Quantidade de dados utilizados (retirando outliers): " + str(n_dados))
 print("75% dos dados (treinamento): " + str(percent_75))
 print("25% dos dados (testes): " + str(percent_25))
